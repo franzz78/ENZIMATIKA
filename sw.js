@@ -1,33 +1,33 @@
-const CACHE_NAME = 'enzimatika-v1';
-const ASSETS_TO_CACHE = [
-  '/',
-  '/index.html',
-  '/style.css',
-  '/script.js',
-  '/manifest.json'
+const CACHE_NAME = 'enzimatika-v2-cache';
+const RESOURCES_TO_CACHE = [
+  './',
+  './index.html',
+  './style.css',
+  './script.js',
+  './manifest.json'
 ];
 
-// Pasang Service Worker dan simpan aset ke dalam cache lokal
-self.addEventListener('install', event => {
+// Proses Menginstalasi Service Worker dan Mencadangkan Data Aset Lokal
+self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then(cache => {
-        console.log('Mencadangkan aset aplikasi...');
-        return cache.addAll(ASSETS_TO_CACHE);
+      .then((cache) => {
+        console.log('[Worker] Mengarsipkan seluruh aset lokal utama kedalam cache.');
+        return cache.addAll(RESOURCES_TO_CACHE);
       })
       .then(() => self.skipWaiting())
   );
 });
 
-// Bersihkan cache lama jika ada pembaruan versi aplikasi
-self.addEventListener('activate', event => {
+// Proses Membersihkan File Cache Versi Lama Jika Aplikasi Diperbarui
+self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then(cacheNames => {
+    caches.keys().then((keys) => {
       return Promise.all(
-        cacheNames.map(cache => {
-          if (cache !== CACHE_NAME) {
-            console.log('Menghapus cache usang:', cache);
-            return caches.delete(cache);
+        keys.map((key) => {
+          if (key !== CACHE_NAME) {
+            console.log('[Worker] Membuang sisa berkas cache usang:', key);
+            return caches.delete(key);
           }
         })
       );
@@ -35,16 +35,16 @@ self.addEventListener('activate', event => {
   );
 });
 
-// Strategi pengambilan data: Cache First, jalankan alternatif jaringan
-self.addEventListener('fetch', event => {
-  event.respondWith(
-    caches.match(event.request)
-      .then(cachedResponse => {
-        if (cachedResponse) {
-          return cachedResponse;
-        }
-        return fetch(event.request);
-      })
-  );
+// Strategi Pengambilan File: Cache Terlebih Dahulu, Jika Gagal Ambil Lewat Internet
+self.addEventListener('fetch', (event) => {
+  // Hanya tangani skema request http/https biasa (mengabaikan skema eksternal google cdn modules)
+  if (event.request.url.startsWith(self.location.origin)) {
+    event.respondWith(
+      caches.match(event.request)
+        .then((cachedResponse) => {
+          if (cachedResponse) return cachedResponse;
+          return fetch(event.request);
+        })
+    );
+  }
 });
-
