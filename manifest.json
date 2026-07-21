@@ -1,7 +1,6 @@
 {
   "short_name": "Enzimatika",
-  "name": "Enzimatika — Modul Lab Interaktif Biologi PWA",
-  "description": "Media Pembelajaran Interaktif Mengenai Materi Enzim SMAN 1 Lemahabang.",
+  "name": "Enzimatika — Lab Biologi Digital",
   "icons": [
     {
       "src": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='40' fill='%232dd4bf'/></svg>",
@@ -18,5 +17,5 @@
   "background_color": "#040d12",
   "theme_color": "#2dd4bf",
   "display": "standalone",
-  "orientation": "landscape"
+  "orientation": "any"
 }
