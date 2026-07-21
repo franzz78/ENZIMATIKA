@@ -3,8 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Enzimatika — Petualangan Sang Biokatalisator</title>
-  <!-- Menghubungkan Aset PWA dan CSS Eksternal -->
+  <title>Enzimatika — Lab Biologi Digital</title>
+  
+  <!-- SweetAlert2 CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+  
   <link rel="stylesheet" href="style.css">
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#2dd4bf">
@@ -12,260 +15,205 @@
 </head>
 <body>
 
-  <div id="letterbox">
-    <div id="stage">
-      <div id="stage-inner">
+  <!-- NAVBAR UTAMA -->
+  <nav class="navbar">
+    <div class="nav-brand">
+      <span class="nav-pulse"></span>
+      <span class="brand-text">ENZIMATIKA</span>
+    </div>
+    <div class="nav-right">
+      <span id="nav-user-display" class="nav-user">Mode Tamu</span>
+      <button id="nav-toggle" class="nav-hamburger" title="Buka Menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    
+    <!-- Menu Dropdown Hamburger -->
+    <div id="nav-dropdown" class="nav-menu">
+      <button id="menu-home" class="menu-item">🏠 Beranda</button>
+      <button id="menu-materi" class="menu-item">📖 Modul Materi</button>
+      <button id="menu-quiz" class="menu-item">🧪 Uji Kompetensi</button>
+      <button id="menu-admin" class="menu-item highlight">🔑 Panel Administrator</button>
+    </div>
+  </nav>
 
-        <!-- =========================================================
-           SPLASH SCREEN
-        ========================================================= -->
-        <div id="screen-splash" class="screen active">
-          <!-- Tombol Rahasia Masuk ke Panel Administrator -->
-          <button id="btn-admin-gate" class="icon-btn" title="Panel Admin" style="position: absolute; top: 20px; right: 20px;">⚙️</button>
-          
-          <div class="molecule-bg">
-            <div class="orb" style="width:200px; height:200px; top:10%; left:10%;"></div>
-            <div class="orb" style="width:150px; height:150px; bottom:15%; right:10%; animation-delay:-3s;"></div>
-          </div>
-          
-          <div class="splash-card">
-            <div class="enzyme-hero">
-              <div class="hero-ring"></div>
-              <div class="hero-core"></div>
-            </div>
-            <h1>ENZIMATIKA</h1>
-            <div class="subtitle">Modul Pembelajaran Interaktif & Simulasi Laboratorium<br>Materi Enzim dan Biokatalisator</div>
-            
-            <div id="splash-form">
-              <div class="field">
-                <label for="input-nama">Nama Lengkap Siswa</label>
-                <input type="text" id="input-nama" placeholder="Masukkan nama Anda..." autocomplete="off">
-              </div>
-              <div class="field">
-                <label for="input-kelas">Kelas / Peminatan</label>
-                <input type="text" id="input-kelas" placeholder="Contoh: XI.F1 atau XI MIPA 1..." autocomplete="off">
-              </div>
-              <div id="splash-error"></div>
-              <button id="btn-start" class="btn" style="width: 100%; margin-top: 8px;">Masuk Laboratorium</button>
-            </div>
-
-            <!-- Animasi Transisi Sesi Belajar -->
-            <div id="loading-wrap" class="loading-wrap">
-              <div class="loading-track">
-                <div id="loading-fill" class="loading-fill"></div>
-              </div>
-              <div id="loading-label" class="loading-label">MENYIAPKAN LABORATORIUM... 0%</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- =========================================================
-           HOME SCREEN
-        ========================================================= -->
-        <div id="screen-home" class="screen">
-          <div class="topbar">
-            <div class="title"><div class="dot"></div>ENZIMATIKA HUB</div>
-            <div class="meta">
-              <span id="home-greet" class="pill">Selamat Datang</span>
-            </div>
-          </div>
-          <div class="home-card">
-            <div class="eyebrow">Modul Biologi Digital</div>
-            <h2>Selamat Datang di Lab Enzimatika</h2>
-            <p>Jelajahi bagaimana komponen protein bekerja mempercepat reaksi metabolik tubuh tanpa ikut bereaksi. Pilih menu di bawah untuk memulai pembelajaran terpandu atau uji pemahaman Anda di ruang evaluasi.</p>
-            
-            <div class="home-actions">
-              <button id="btn-goto-materi" class="btn">📖 Buka Materi</button>
-              <button id="btn-goto-quiz" class="btn amber">🧪 Uji Kompetensi (Kuis)</button>
-            </div>
-            
-            <div class="home-stats">
-              <div class="stat-chip">Target KKM<b>75</b></div>
-              <div class="stat-chip">Sistem Database<b>Aktif (Cloud)</b></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- =========================================================
-           MATERI SCREEN
-        ========================================================= -->
-        <div id="screen-materi" class="screen">
-          <div class="topbar">
-            <div class="title"><div class="dot"></div>RUANG MATERI</div>
-            <div class="meta">
-              <button class="icon-btn" onclick="window.location.reload()">🏠</button>
-            </div>
-          </div>
-          
-          <div class="materi-body">
-            <div class="materi-text">
-              <div class="step-tag">Topik Pembahasan</div>
-              <h3 id="materi-title">Memuat Judul Materi...</h3>
-              <div id="materi-content-area">
-                <!-- Konten teks dinamis dirender lewat Javascript -->
-              </div>
-            </div>
-            
-            <div class="materi-visual">
-              <div id="btn-zoom-diagram" class="diagram-preview">
-                <div class="preview-inner" id="diagram-svg-container">
-                  <!-- Grafik / SVG Model Enzim dimasukkan ke sini -->
-                </div>
-                <div class="zoom-hint">🔍 Klik Grafik untuk Memperbesar</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Lightbox Zoom Interaktif -->
-          <div id="materi-lightbox" class="lightbox">
-            <div class="lightbox-topbar">
-              <div class="lb-title" id="lightbox-title">Detail Struktur Makromolekul</div>
-              <button id="btn-close-lightbox" class="icon-btn">✕</button>
-            </div>
-            <div class="lightbox-stage" id="lb-stage">
-              <div class="lightbox-tip">Gunakan Mouse Drag / Sentuhan untuk Menggeser Diagram</div>
-              <div class="lightbox-content" id="lb-content">
-                <!-- Salinan SVG untuk di-zoom -->
-              </div>
-            </div>
-            <div class="lightbox-controls">
-              <button id="btn-zoom-out">−</button>
-              <input type="range" id="lb-zoom-slider" min="50" max="300" value="100">
-              <button id="btn-zoom-in">+</button>
-              <span id="lb-zoom-pct">100%</span>
-              <button id="btn-zoom-reset" class="btn small secondary">Reset</button>
-            </div>
-          </div>
-
-          <div class="materi-nav">
-            <button id="btn-prev-materi" class="btn small secondary">Kembali</button>
-            <div class="dots" id="materi-dots"></div>
-            <button id="btn-next-materi" class="btn small">Lanjut</button>
-          </div>
-        </div>
-
-        <!-- =========================================================
-           QUIZ SCREEN
-        ========================================================= -->
-        <div id="screen-quiz" class="screen">
-          <div class="topbar">
-            <div class="title"><div class="dot" style="background:var(--amber);box-shadow:0 0 8px var(--amber);"></div>EVALUASI LABORATORIUM</div>
-            <div class="meta">
-              <div class="score-readout">Progress Kuis: <b id="quiz-idx-readout">1/5</b></div>
-            </div>
-          </div>
-          
-          <div class="quiz-progress-wrap">
-            <div class="quiz-progress-track">
-              <div id="quiz-progress-fill" class="quiz-progress-fill"></div>
-            </div>
-          </div>
-          
-          <div class="quiz-body">
-            <span id="quiz-type-tag" class="q-type-tag">Pilihan Ganda</span>
-            <h3 id="quiz-question-title" class="q-title">Memuat butir pertanyaan simulasi reaksi enzim...</h3>
-            
-            <div id="quiz-answer-zone" class="q-content">
-              <!-- Area Render Kuis Dinamis Berdasarkan Tipe Soal -->
-            </div>
-
-            <div id="quiz-feedback" class="feedback-banner">
-              <span id="feedback-icon"></span>
-              <span id="feedback-text"></span>
-            </div>
-          </div>
-
-          <div class="quiz-nav">
-            <button id="btn-submit-answer" class="btn small amber">Kunci Jawaban</button>
-            <button id="btn-next-quiz" class="btn small" disabled>Soal Berikutnya</button>
-          </div>
-        </div>
-
-        <!-- =========================================================
-           RESULT SCREEN
-        ========================================================= -->
-        <div id="screen-result" class="screen">
-          <div class="topbar">
-            <div class="title"><div class="dot"></div>LAPORAN EVALUASI</div>
-          </div>
-          <div class="result-card">
-            <div id="result-ring" class="result-ring">
-              <div>
-                <div id="result-num" class="num">0</div>
-                <div class="sub">SKOR AKHIR</div>
-              </div>
-            </div>
-            <h2 id="result-status">Menganalisis Hasil...</h2>
-            <p id="result-message">Terima kasih telah menyelesaikan evaluasi pembelajaran. Nilai Anda telah diunggah ke server cloud guru pembimbing secara real-time.</p>
-            <div class="result-actions">
-              <button onclick="window.location.reload()" class="btn">Selesai & Keluar</button>
-              <button id="btn-goto-credits" class="btn secondary">Lihat Pengembang</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- =========================================================
-           CREDITS SCREEN
-        ========================================================= -->
-        <div id="screen-credits" class="screen">
-          <div class="credits-card">
-            <div class="dev-avatar">
-              <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&width=200&auto=format&fit=crop" alt="Pas Foto Pengembang">
-            </div>
-            <div class="role">Pengembang Aplikasi</div>
-            <h2>Tim Lab Digital Enzimatika</h2>
-            <div class="inst">SMAN 1 Lemahabang<br>Kabupaten Cirebon</div>
-            <button onclick="window.location.reload()" class="btn small secondary">Kembali ke Beranda</button>
-            <div class="footnote">© 2026 Enzimatika PWA. Hak Cipta Dilindungi.</div>
-          </div>
-        </div>
-
-        <!-- =========================================================
-           ADMINISTRATOR PANEL SCREEN
-        ========================================================= -->
-        <div id="screen-admin" class="screen">
-          <div class="topbar">
-            <div class="title">
-              <span class="dot" style="background: var(--amber); box-shadow: 0 0 8px var(--amber);"></span>
-              PANEL ADMINISTRATOR (MONITORING KELAS)
-            </div>
-            <div class="meta">
-              <button id="btn-admin-logout" class="btn small secondary" style="color:var(--coral); border-color:var(--coral);">Keluar Panel</button>
-            </div>
-          </div>
-          
-          <div class="admin-body" style="flex:1; padding:24px 34px; overflow:hidden; display:flex; flex-direction:column; gap:16px;">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-              <h3 style="margin:0; font-family:var(--font-display); color:var(--teal-soft);">Log Nilai Ujian Siswa (Sinkronisasi Otomatis)</h3>
-              <div id="admin-stats-total" class="pill">Total Pengisi: 0</div>
-            </div>
-
-            <!-- Tabel Monitoring Real-time -->
-            <div class="table-responsive" style="flex:1; background:var(--bg-panel); border:1px solid var(--line); border-radius:12px; overflow:auto;">
-              <table style="width:100%; border-collapse:collapse; text-align:left; font-size:14px;">
-                <thead style="background:var(--bg-panel-2); position:sticky; top:0; color:var(--teal-soft); font-family:var(--font-mono); font-size:12px; letter-spacing:0.5px; text-transform:uppercase; z-index:10;">
-                  <tr>
-                    <th style="padding:14px 16px; border-bottom:1px solid var(--line);">Waktu Masuk</th>
-                    <th style="padding:14px 16px; border-bottom:1px solid var(--line);">Nama Lengkap</th>
-                    <th style="padding:14px 16px; border-bottom:1px solid var(--line);">Kelas</th>
-                    <th style="padding:14px 16px; border-bottom:1px solid var(--line); text-align:center;">Skor Akhir</th>
-                  </tr>
-                </thead>
-                <tbody id="admin-table-body" style="color:var(--text);">
-                  <tr>
-                    <td colspan="4" style="padding:40px; text-align:center; color:var(--text-muted); font-family:var(--font-mono);">Menunggu data sinkronisasi cloud...</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-
-      </div>
+  <!-- RUNNING TEXT / TULISAN BERJALAN DI BAWAH NAVBAR -->
+  <div class="running-text-container">
+    <div class="running-text-content">
+      🧬 <span>Enzimatika — Lab Biologi Digital</span> &nbsp;•&nbsp; 
+      🧪 Selamat Datang di Simulasi & Laboratorium Biokatalisator Interaktif &nbsp;•&nbsp; 
+      🔬 SMAN 1 Lemahabang — Kelas XII Biologi &nbsp;•&nbsp; 
+      ⚡ Pelajari Mekanisme Kerja Enzim, Apoenzim, dan Kofaktor Secara Real-Time! &nbsp;•&nbsp;
     </div>
   </div>
 
-  <!-- Memuat Engine Utama Aplikasi Sebagai Modul ES6 -->
+  <div id="app-container">
+    
+    <!-- 1. SPLASH SCREEN -->
+    <div id="screen-splash" class="screen active">
+      <div class="glow-orb orb-1"></div>
+      <div class="glow-orb orb-2"></div>
+      
+      <div class="glass-card splash-card">
+        <div class="hero-icon">
+          <div class="ring-outer"></div>
+          <div class="ring-inner"></div>
+        </div>
+        <h1>ENZIMATIKA</h1>
+        <p class="subtitle">Laboratorium Virtual & Simulasi Biokatalisator</p>
+        
+        <div id="splash-form">
+          <div class="input-group">
+            <label for="input-nama">Nama Lengkap Siswa</label>
+            <input type="text" id="input-nama" placeholder="Ketik nama kamu..." autocomplete="off">
+          </div>
+          <div class="input-group">
+            <label for="input-kelas">Kelas / Rombel</label>
+            <input type="text" id="input-kelas" placeholder="Contoh: XI.F7..." autocomplete="off">
+          </div>
+          <button id="btn-start" class="btn btn-primary" style="width: 100%;">Masuk Lab 🚀</button>
+        </div>
+
+        <div id="loading-wrap" class="loading-wrap">
+          <div class="loading-track">
+            <div id="loading-fill" class="loading-fill"></div>
+          </div>
+          <div id="loading-label" class="loading-label">MENYIAPKAN RUANG LAB... 0%</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. HOME SCREEN -->
+    <div id="screen-home" class="screen">
+      <div class="glass-card home-card">
+        <span class="badge">Biologi Modern</span>
+        <h2>Selamat Datang!</h2>
+        <p>Pelajari mekanisme enzim, kofaktor, serta uji pemahamanmu secara langsung dengan simulasi real-time.</p>
+        
+        <div class="home-actions">
+          <button id="btn-goto-materi" class="btn btn-primary">📖 Buka Materi</button>
+          <button id="btn-goto-quiz" class="btn btn-accent">🧪 Uji Kuis</button>
+        </div>
+        
+        <div class="home-stats">
+          <div class="stat-chip">Target KKM: <b>75</b></div>
+          <div class="stat-chip">Database: <b>Online</b></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. MATERI SCREEN -->
+    <div id="screen-materi" class="screen">
+      <div class="materi-grid">
+        <div class="materi-text-card glass-card">
+          <span class="step-tag">Topik Pembahasan</span>
+          <h3 id="materi-title">Memuat Judul...</h3>
+          <div id="materi-content-area" class="materi-body"></div>
+        </div>
+        
+        <div class="materi-visual-card glass-card">
+          <div id="btn-zoom-diagram" class="diagram-preview">
+            <div class="preview-inner" id="diagram-svg-container"></div>
+            <div class="zoom-hint">🔍 Klik Diagram untuk Zoom</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bottom-bar">
+        <button id="btn-prev-materi" class="btn btn-small btn-secondary">Kembali</button>
+        <div class="dots" id="materi-dots"></div>
+        <button id="btn-next-materi" class="btn btn-small btn-primary">Lanjut</button>
+      </div>
+    </div>
+
+    <!-- 4. QUIZ SCREEN -->
+    <div id="screen-quiz" class="screen">
+      <div class="quiz-header glass-card">
+        <div class="score-readout">Soal: <b id="quiz-idx-readout">1/2</b></div>
+        <div class="quiz-progress-track">
+          <div id="quiz-progress-fill" class="quiz-progress-fill"></div>
+        </div>
+      </div>
+      
+      <div class="quiz-card glass-card">
+        <span id="quiz-type-tag" class="q-type-tag">Pilihan Ganda</span>
+        <h3 id="quiz-question-title" class="q-title">Memuat Pertanyaan...</h3>
+        
+        <div id="quiz-answer-zone" class="q-content"></div>
+      </div>
+
+      <div class="bottom-bar">
+        <button id="btn-submit-answer" class="btn btn-small btn-accent">Kunci Jawaban</button>
+        <button id="btn-next-quiz" class="btn btn-small btn-primary" disabled>Lanjut</button>
+      </div>
+    </div>
+
+    <!-- 5. RESULT SCREEN -->
+    <div id="screen-result" class="screen">
+      <div class="glass-card result-card">
+        <div id="result-ring" class="result-ring">
+          <div>
+            <div id="result-num" class="num">0</div>
+            <div class="sub">NILAI</div>
+          </div>
+        </div>
+        <h2 id="result-status">Menganalisis...</h2>
+        <p>Nilai kuis kamu telah otomatis disinkronkan ke server cloud guru.</p>
+        <div class="result-actions">
+          <button onclick="window.location.reload()" class="btn btn-primary">Kembali ke Awal</button>
+          <button id="btn-goto-credits" class="btn btn-secondary">Pengembang</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. CREDITS SCREEN -->
+    <div id="screen-credits" class="screen">
+      <div class="glass-card credits-card">
+        <div class="dev-avatar">
+          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=200&auto=format&fit=crop" alt="Pengembang">
+        </div>
+        <span class="badge">Pengembang Aplikasi</span>
+        <h2>Tim Lab Enzimatika</h2>
+        <p class="inst">SMAN 1 Lemahabang<br>Kabupaten Cirebon</p>
+        <button onclick="window.location.reload()" class="btn btn-small btn-secondary">Kembali</button>
+      </div>
+    </div>
+
+    <!-- 7. ADMINISTRATOR PANEL SCREEN -->
+    <div id="screen-admin" class="screen">
+      <div class="admin-header glass-card">
+        <div class="admin-title-wrap">
+          <h3>🔑 Panel Otoritas Administrator</h3>
+          <span id="admin-stats-total" class="badge">Total Pengisi: 0</span>
+        </div>
+        <button id="btn-admin-logout" class="btn btn-small btn-coral">Keluar Admin</button>
+      </div>
+
+      <div class="table-responsive glass-card">
+        <table>
+          <thead>
+            <tr>
+              <th>Waktu Setor</th>
+              <th>Nama Siswa</th>
+              <th>Kelas</th>
+              <th style="text-align:center;">Nilai</th>
+            </tr>
+          </thead>
+          <tbody id="admin-table-body">
+            <tr>
+              <td colspan="4" style="text-align: center; padding: 20px;">Menghubungkan ke database...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SweetAlert2 JS -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script type="module" src="script.js"></script>
 </body>
 </html>
